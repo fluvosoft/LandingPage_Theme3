@@ -1,5 +1,4 @@
 'use client'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export default function ScrollToTop() {
@@ -32,14 +31,6 @@ export default function ScrollToTop() {
   return (
     <div className='fixed bottom-8 right-8 z-999'>
       <div className='flex items-center gap-2.5'>
-        <Link
-          href={
-            'https://getnextjstemplates.com/products/si-educational-free-nextjs-landing-page-template'
-          }
-          target='_blank'
-          className='hidden lg:block bg-primary text-white hover:bg-darkmode text-sm px-4 py-3.5 leading-none rounded-lg font-medium text-nowrap'>
-          Download Now
-        </Link>
         {isVisible && (
           <div
             onClick={scrollToTop}

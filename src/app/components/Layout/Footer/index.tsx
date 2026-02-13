@@ -129,14 +129,7 @@ const Footer = () => {
       </div>
       <div className='py-3'>
         <h3 className='text-center text-white/60'>
-          @2025 - All Rights Reserved by{' '}
-          <Link
-            href='https://adminmart.com/'
-            target='_blank'
-            className='hover:text-white'>
-            {' '}
-            GetNextJs Templates.com
-          </Link>
+          @2026 - All Rights Reserved by FluvoSoft
         </h3>
       </div>
     </div>

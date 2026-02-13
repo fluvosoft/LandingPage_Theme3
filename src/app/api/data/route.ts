@@ -15,7 +15,6 @@ const HeaderData: HeaderItem[] = [
   { label: 'Testimonial', href: '/#testimonial-section' },
   { label: 'Join', href: '/#join-section' },
   { label: 'Contact Us', href: '/#contact' },
-  { label: 'Docs', href: '/documentation' },
 ]
 
 const CourseData: CourseType[] = [
