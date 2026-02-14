@@ -10,35 +10,29 @@ interface VisitTrackerProps {
 export function VisitTracker({
   customerId,
   path = typeof window !== 'undefined' ? window.location.pathname : '/',
-  backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://88.222.245.134:8080/api',
+  backendUrl,
 }: VisitTrackerProps) {
   useEffect(() => {
     if (!customerId) return
 
     const referrer =
       typeof document !== 'undefined' ? document.referrer : ''
-    const url = new URL(`${backendUrl}/customers/${customerId}/visit`)
+
+    // Use Next.js API route proxy to avoid mixed content issues
+    const url = new URL('/api/visit', window.location.origin)
     url.searchParams.set('path', path)
+    url.searchParams.set('customerId', customerId)
     if (referrer) url.searchParams.set('referrer', referrer)
 
-    // Use image pixel method (most reliable, no CORS issues)
-    const img = new Image()
-    img.src = url.toString()
-    img.width = 1
-    img.height = 1
-    img.style.position = 'absolute'
-    img.style.visibility = 'hidden'
-
-    // Optional: Add to body temporarily
-    if (typeof document !== 'undefined') {
-      document.body.appendChild(img)
-      setTimeout(() => {
-        if (document.body.contains(img)) {
-          document.body.removeChild(img)
-        }
-      }, 100)
-    }
-  }, [customerId, path, backendUrl])
+    // Use fetch to call the API proxy route
+    fetch(url.toString(), {
+      method: 'GET',
+      cache: 'no-cache',
+    }).catch((error) => {
+      // Silently fail - don't break the page if tracking fails
+      console.debug('Visit tracking failed:', error)
+    })
+  }, [customerId, path])
 
   return null // This component renders nothing
 }

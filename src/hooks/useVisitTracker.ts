@@ -12,21 +12,21 @@ export function useVisitTracker({
   customerId,
   path = typeof window !== 'undefined' ? window.location.pathname : '/',
   referrer = typeof document !== 'undefined' ? document.referrer : '',
-  backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://88.222.245.134:8080/api',
+  backendUrl,
 }: UseVisitTrackerOptions) {
   useEffect(() => {
     if (!customerId) return
 
     const trackVisit = async () => {
       try {
-        const url = new URL(`${backendUrl}/customers/${customerId}/visit`)
-        if (path) url.searchParams.set('path', path)
+        // Use Next.js API route proxy to avoid mixed content issues
+        const url = new URL('/api/visit', window.location.origin)
+        url.searchParams.set('path', path)
+        url.searchParams.set('customerId', customerId)
         if (referrer) url.searchParams.set('referrer', referrer)
 
-        // Use fetch with no-cors mode for cross-origin requests
         await fetch(url.toString(), {
           method: 'GET',
-          mode: 'no-cors', // Important: prevents CORS errors
           cache: 'no-cache',
         })
       } catch (error) {
@@ -36,5 +36,5 @@ export function useVisitTracker({
     }
 
     trackVisit()
-  }, [customerId, path, referrer, backendUrl])
+  }, [customerId, path, referrer])
 }

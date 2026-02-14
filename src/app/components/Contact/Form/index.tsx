@@ -41,10 +41,8 @@ const ContactForm = () => {
     e.preventDefault()
     setLoader(true)
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://88.222.245.134:8080/api'
-    const customerId = process.env.NEXT_PUBLIC_CUSTOMER_ID || 'string22'
-
-    fetch(`${apiBaseUrl}/customers/${customerId}/contact`, {
+    // Use Next.js API route proxy to avoid mixed content issues
+    fetch('/api/contact', {
       method: 'POST',
       headers: {
         'accept': 'application/json',
