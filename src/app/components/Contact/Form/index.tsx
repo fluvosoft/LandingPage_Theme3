@@ -29,44 +29,55 @@ const ContactForm = () => {
     }))
   }
   const reset = () => {
-    formData.firstname = ''
-    formData.lastname = ''
-    formData.email = ''
-    formData.phnumber = ''
-    formData.Message = ''
+    setFormData({
+      firstname: '',
+      lastname: '',
+      email: '',
+      phnumber: '',
+      Message: '',
+    })
   }
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoader(true)
 
-    fetch('https://formsubmit.co/ajax/bhainirav772@gmail.com', {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://88.222.245.134:8080/api'
+    const customerId = process.env.NEXT_PUBLIC_CUSTOMER_ID || 'string22'
+
+    fetch(`${apiBaseUrl}/customers/${customerId}/contact`, {
       method: 'POST',
-      headers: { 'Content-type': 'application/json' },
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        Name: formData.firstname,
-        LastName: formData.lastname,
-        Email: formData.email,
-        PhoneNo: formData.phnumber,
-        Message: formData.Message,
+        firstName: formData.firstname,
+        lastName: formData.lastname,
+        email: formData.email,
+        phoneNumber: formData.phnumber,
+        details: formData.Message,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setSubmitted(true)
-          setShowThanks(true)
-          reset()
-
-          setTimeout(() => {
-            setShowThanks(false)
-          }, 5000)
+      .then((response) => {
+        if (response.status === 201) {
+          return response.json()
         }
-
+        throw new Error('Failed to submit contact form')
+      })
+      .then((data) => {
+        setSubmitted(true)
+        setShowThanks(true)
         reset()
+        setLoader(false)
+
+        setTimeout(() => {
+          setShowThanks(false)
+        }, 5000)
       })
       .catch((error) => {
         setLoader(false)
-        console.log(error.message)
+        console.error('Error submitting contact form:', error.message)
+        alert('Failed to submit contact form. Please try again.')
       })
   }
   return (
